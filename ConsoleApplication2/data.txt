@@ -1,0 +1,5 @@
+FIRST NAME: dima
+LAST NAME: dima
+PHONE NUMBER: dima
+SALARY: 30.000000
+---
