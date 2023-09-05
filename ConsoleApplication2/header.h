@@ -156,13 +156,15 @@ void searchLastname(Employee* arr)
     cout << "Enter the last name to find the employee: ";
     cin.ignore();
     cin.getline(lastname, stringlen);
+    bool isFound = 0;
     for (size_t i = 0; i < amountofemplo; i++)
     {
         if (!(strcmp(lastname, arr[i].lastname)))
         {
             showEmployee(arr[i]);
+            isFound = 1;
         }
-        else if (i == amountofemplo - 1)
+        else if (i == (amountofemplo - 1) && isFound==0)
         {
             cout << "No employees found" << endl;
         }
@@ -188,20 +190,22 @@ void sortbyLastName(Employee*& arr, const char* path)
     rewriteFile(path, arr);
 }
 void searchSalary(Employee* arr)
-{
+            {
     double min;
     double max;
     cout << "Enter the minimal salary: ";
     cin >> min;
     cout << "Enter the maximum salary: ";
     cin >> max;
+    bool isFound = 0;
     for (size_t i = 0; i < amountofemplo; i++)
     {
         if (arr[i].salary >= min && arr[i].salary <= max)
         {
             showEmployee(arr[i]);
+            isFound = 1;
         }
-        else if (i == amountofemplo - 1)
+        else if (i == amountofemplo - 1 && isFound==0)
             cout << "No employees found" << endl;
     }
 }
@@ -272,8 +276,8 @@ void showMenu(const char* path, Employee*& arr)
             }
             else if (clear == 2)
             {
-                break;
                 spaceInput();
+                break;
             }
             else
                 cout << "There is no such option" << endl;
@@ -282,6 +286,7 @@ void showMenu(const char* path, Employee*& arr)
     }
     default:
         cout << "There is no such option";
+        spaceInput();
         break;
     }
 }

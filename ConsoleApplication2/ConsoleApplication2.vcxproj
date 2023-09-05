@@ -140,7 +140,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="ConsoleApplication2.cpp" />
-    <ClCompile Include="header.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="header.h" />
