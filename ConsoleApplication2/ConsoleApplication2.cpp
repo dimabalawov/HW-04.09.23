@@ -6,13 +6,13 @@
 
 using namespace std;
 
+const short stringlen = 30;
 struct Employee {
-    char firstname[20];
-    char lastname[20];
-    char phonenumber[20];
+    char firstname[stringlen];
+    char lastname[stringlen];
+    char phonenumber[stringlen];
     double salary;
 };
-const short stringlen = 30;
 int amountofemplo=0;
 
 void readFile(const char* path)
@@ -26,6 +26,21 @@ void readFile(const char* path)
         cout << "No employees added" << endl;
     fclose(file);
 }
+bool isPhoneNumberRight(char number[])
+{
+    if (!strlen(number) == 12)
+        return false;
+    if (number[0] != '(')
+        return false;
+    if (number[4] != ')')
+        return false;
+    for (size_t i = 0; i < strlen(number); i++)
+    {
+        if (number[i] > '9' && number[i] != '(' && number[i] != ')')
+            return false;
+    }
+    return true;
+}
 
 void addEmployee(const char* path,Employee* &arr)
 {
@@ -38,8 +53,15 @@ void addEmployee(const char* path,Employee* &arr)
     cin >> newarr[amountofemplo].firstname;
     cout << "Enter the last name of the employee: ";
     cin >> newarr[amountofemplo].lastname;
-    cout << "Enter the phone number of the employee: ";
-    cin >> newarr[amountofemplo].phonenumber;
+    cout << "Enter the phone number of the employee( f.e. (012)3456789 ): ";
+    short i = 0;
+    do
+    {
+        if (i > 0)
+            cout << "Wrong! Try Again" << endl;
+        cin >> newarr[amountofemplo].phonenumber;
+        i++;
+    } while (!(isPhoneNumberRight(newarr[amountofemplo].phonenumber)));
     cout << "Enter the salary of the employee: ";
     cin >> newarr[amountofemplo].salary;
     FILE* file = fopen(path, "a");
@@ -96,11 +118,25 @@ void deleteEmployee(const char* path, Employee* &arr)
                 if (j != index)
                     newarr[j] = arr[j];
             }
-            amountofemplo--;
-            delete[] arr;
-            arr = newarr;
-            cout << "Employee has been deleted" << endl;
-            rewriteFile(path, arr);
+            cout << "Confirm the deleting: " << endl;
+            cout << "1 - Confirm" << endl;
+            cout << "0 - Decline" << endl;
+            short option;
+            cin >> option;
+            if (option == 1)
+            {
+                amountofemplo--;
+                delete[] arr;
+                arr = newarr;
+                cout << "Employee has been deleted" << endl;
+                rewriteFile(path, arr);
+            }
+            else
+            {
+                delete[] newarr;
+
+            }
+            
         }
         else if(i== amountofemplo-1)
             cout << "No such employee has found" << endl;
@@ -135,7 +171,25 @@ void searchLastname(Employee* arr)
         }
     }
 }
-
+void sortbyLastName(Employee* &arr, const char* path)
+{
+    for (int i = 0; i < amountofemplo; i++)
+    {
+        for (int j = amountofemplo - 1; j > i; j--)
+        {
+            int letter = 0;
+            while (arr[j - 1].lastname[letter] == arr[j].lastname[letter])
+            {
+                letter++;
+            }
+            if (arr[j - 1].lastname[letter] > arr[j].lastname[letter])
+            {
+                swap(arr[j - 1], arr[j]);
+            }
+        }
+    }
+    rewriteFile(path, arr);
+}
 void searchSalary(Employee* arr)
 {
     double min;
@@ -175,7 +229,8 @@ void showMenu(const char* path, Employee*& arr)
     cout << "3 - Show all the employees" << endl;
     cout << "4 - Search by the last name" << endl;
     cout << "5 - Search by the salary" << endl;
-    cout << "6 - Clear the file" << endl;
+    cout << "6 - Sort by the last name" << endl;
+    cout << "7 - Clear the file" << endl;
     cin >> option;
     switch (option)
     {
@@ -200,6 +255,10 @@ void showMenu(const char* path, Employee*& arr)
         spaceInput();
         break;
     case 6:
+        sortbyLastName(arr,path);
+        spaceInput();
+        break;
+    case 7:
     {
         short clear = 0;
         while (clear != 1 && clear != 2)
